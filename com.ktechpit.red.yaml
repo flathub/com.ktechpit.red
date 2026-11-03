@@ -20,42 +20,28 @@ finish-args:
   - --filesystem=xdg-download
 
 cleanup:
-  - /bin/mksquashfs
-  - /bin/unsquashfs
-  - /bin/sqfscat
-  - /bin/sqfstar
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /share/man
+  - /share/doc
 
 cleanup-commands:
   - /app/cleanup-BaseApp.sh
 
 modules:
-  - shared-modules/squashfs-tools/squashfs-tools.json
+  - deno.yaml
 
   - name: red
-    buildsystem: simple
-    build-commands:
-      - unsquashfs -no-progress *.snap
-      - install -Dm755 squashfs-root/usr/bin/red ${FLATPAK_DEST}/bin/red
-      - install -Dm755 squashfs-root/usr/bin/deno ${FLATPAK_DEST}/bin/deno
-      - cp -r squashfs-root/usr/share/icons ${FLATPAK_DEST}/share/
-      - install -Dm644 squashfs-root/usr/share/applications/com.ktechpit.red.desktop ${FLATPAK_DEST}/share/applications/com.ktechpit.red.desktop
-      - desktop-file-edit --set-icon=${FLATPAK_ID} ${FLATPAK_DEST}/share/applications/com.ktechpit.red.desktop
-      - install -Dm644 squashfs-root/usr/share/metainfo/com.ktechpit.red.metainfo.xml ${FLATPAK_DEST}/share/metainfo/com.ktechpit.red.metainfo.xml
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DRED_BUILD_TESTS=OFF
     sources:
-      # =========================
-      # x86_64 (amd64) - stable
-      # =========================
-      - type: file
-        url: https://api.snapcraft.io/api/v1/snaps/download/46Yk5UkQgwdukH9Fw6IeJOkGhyELYKtQ_60.snap
-        sha256: a0af24f307ac4b8e37be17eab04e909fe1b34c52cde92877984eff186d03e76d
-        only-arches:
-          - x86_64
-
-      # =========================
-      # aarch64 (arm64) - stable
-      # =========================
-      - type: file
-        url: https://api.snapcraft.io/api/v1/snaps/download/46Yk5UkQgwdukH9Fw6IeJOkGhyELYKtQ_59.snap
-        sha256: 235416ab7f15f438f34d8fc4ce66807cb1ff5666803ca2f9e2f5950359565bdf
-        only-arches:
-          - aarch64
+      - type: git
+        url: https://github.com/keshavbhatt/red.git
+        tag: v10.3.1
+        commit: 0dfb3479807682cd3f0ab26bc05eb6d1e800407d
+        x-checker-data:
+          type: git
+          tag-pattern: ^v([\d.]+)$
