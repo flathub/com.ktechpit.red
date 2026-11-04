@@ -40,8 +40,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/keshavbhatt/red.git
-        tag: v10.3.1
-        commit: 0dfb3479807682cd3f0ab26bc05eb6d1e800407d
+        tag: v10.3.2
+        commit: 4baf5d18c1d2f0d2200185cf976dcd6c4bbc694f
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
